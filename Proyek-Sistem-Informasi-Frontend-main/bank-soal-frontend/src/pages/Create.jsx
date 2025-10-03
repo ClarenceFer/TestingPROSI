@@ -182,7 +182,7 @@ const FormCreatorPage = ({ currentUser }) => {
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/questionSets");
+                const response = await fetch("https://sibakso-backend-production.up.railway.app/api/questionSets");
                 const data = await response.json();
                 console.log("Questions data dari backend:", data);
                 setQuestions(data);
