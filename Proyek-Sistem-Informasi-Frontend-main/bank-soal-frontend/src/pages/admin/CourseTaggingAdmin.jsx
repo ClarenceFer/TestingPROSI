@@ -3,6 +3,7 @@ import { Search, Plus, User, LogOut, Tag, BookOpen, Trash2, X, AlertCircle, Chec
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AuthService from '../../services/auth.service';
+import LogoIF from "../../assets/LogoIF.jpg";
 
 const API_URL = "https://sibakso-backend-production.up.railway.app/api";
 
@@ -11,11 +12,11 @@ const CourseService = {
   getAllCourses: async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const headers = user?.accessToken ? { 'x-access-token': user.accessToken } : {};
-    
+
     try {
       const response = await axios.get(`${API_URL}/course-tags`, { headers });
       const data = response.data;
-      
+
       return {
         data: data.map(course => ({
           id: course.id,
@@ -35,7 +36,7 @@ const MaterialTagService = {
   getAllMaterialTag: async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const headers = user?.accessToken ? { 'x-access-token': user.accessToken } : {};
-    
+
     try {
       const response = await axios.get(`${API_URL}/material-tags`, { headers });
       return { data: response.data };
@@ -51,7 +52,7 @@ const CourseAssignmentService = {
   getAssignedMaterials: async (courseId) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const headers = user?.accessToken ? { 'x-access-token': user.accessToken } : {};
-    
+
     try {
       const response = await axios.get(`${API_URL}/course-material-assignments/course/${courseId}/assigned-materials`, { headers });
       return response.data;
@@ -64,7 +65,7 @@ const CourseAssignmentService = {
   getUnassignedMaterials: async (courseId) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const headers = user?.accessToken ? { 'x-access-token': user.accessToken } : {};
-    
+
     try {
       const response = await axios.get(`${API_URL}/course-material-assignments/course/${courseId}/unassigned-materials`, { headers });
       return response.data;
@@ -80,10 +81,10 @@ const CourseAssignmentService = {
       'Content-Type': 'application/json',
       ...(user?.accessToken ? { 'x-access-token': user.accessToken } : {})
     };
-    
+
     try {
-      const response = await axios.post(`${API_URL}/course-material-assignments/course/${courseId}/assign-materials`, 
-        { materialTagIds }, 
+      const response = await axios.post(`${API_URL}/course-material-assignments/course/${courseId}/assign-materials`,
+        { materialTagIds },
         { headers }
       );
       return response.data;
@@ -96,7 +97,7 @@ const CourseAssignmentService = {
   removeMaterialAssignment: async (courseId, materialId) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const headers = user?.accessToken ? { 'x-access-token': user.accessToken } : {};
-    
+
     try {
       const response = await axios.delete(`${API_URL}/course-material-assignments/course/${courseId}/material/${materialId}`, { headers });
       return response.data;
@@ -109,7 +110,7 @@ const CourseAssignmentService = {
   getStatistics: async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const headers = user?.accessToken ? { 'x-access-token': user.accessToken } : {};
-    
+
     try {
       const response = await axios.get(`${API_URL}/course-material-assignments/statistics`, { headers });
       return response.data;
@@ -122,7 +123,7 @@ const CourseAssignmentService = {
   getAllAssignments: async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const headers = user?.accessToken ? { 'x-access-token': user.accessToken } : {};
-    
+
     try {
       const response = await axios.get(`${API_URL}/course-material-assignments/assignments`, { headers });
       return response.data;
@@ -170,7 +171,7 @@ const CourseTaggingAdmin = ({ currentUser }) => {
         CourseService.getAllCourses(),
         MaterialTagService.getAllMaterialTag()
       ]);
-      
+
       setCoursesList(coursesResponse.data);
       setMaterialTagsList(materialTagsResponse.data);
 
@@ -187,13 +188,13 @@ const CourseTaggingAdmin = ({ currentUser }) => {
         setStatistics({});
         setAssignmentsOverview([]);
       }
-      
+
     } catch (err) {
       console.error("Error fetching initial data:", err);
       const errorMessage = err.message || 'Gagal memuat data. Silakan coba lagi.';
       setError(errorMessage);
       showNotification(errorMessage, 'error');
-      
+
       if (err.message.includes('401') || err.message.includes('403') || err.message.includes('Unauthorized')) {
         AuthService.logout();
         navigate('/login');
@@ -205,14 +206,14 @@ const CourseTaggingAdmin = ({ currentUser }) => {
 
   const fetchCourseAssignments = useCallback(async () => {
     if (!selectedCourse) return;
-    
+
     setIsLoading(true);
     try {
       const [assignedResponse, unassignedResponse] = await Promise.all([
         CourseAssignmentService.getAssignedMaterials(selectedCourse.id),
         CourseAssignmentService.getUnassignedMaterials(selectedCourse.id)
       ]);
-      
+
       setAssignedMaterials(assignedResponse.data);
       setUnassignedMaterials(unassignedResponse.data);
     } catch (err) {
@@ -238,7 +239,7 @@ const CourseTaggingAdmin = ({ currentUser }) => {
 
   const handleAssignMaterials = useCallback(async () => {
     if (!selectedCourse || selectedMaterialsForAssign.length === 0) return;
-    
+
     setSaving(true);
     try {
       const response = await CourseAssignmentService.assignMaterials(selectedCourse.id, selectedMaterialsForAssign);
@@ -258,26 +259,26 @@ const CourseTaggingAdmin = ({ currentUser }) => {
 
   const handleRemoveMaterial = useCallback(async (materialId) => {
     if (!selectedCourse) return;
-    
+
     // Enhanced confirmation dialog
     const isConfirmed = window.confirm(
       '🗑️ Apakah Anda yakin ingin menghapus assignment materi ini?\n\n' +
       '⚠️ Tindakan ini tidak dapat dibatalkan.'
     );
-    
+
     if (!isConfirmed) return;
-    
+
     // Show loading notification
     const loadingToast = showNotification('⏳ Menghapus assignment materi...', 'loading');
-    
+
     try {
       await CourseAssignmentService.removeMaterialAssignment(selectedCourse.id, materialId);
-      
+
       // Hide loading notification
       if (loadingToast && typeof loadingToast.dismiss === 'function') {
         loadingToast.dismiss();
       }
-      
+
       // Enhanced success notification
       showNotification(
         '✅ Berhasil! Assignment materi telah dihapus dari kursus',
@@ -288,23 +289,23 @@ const CourseTaggingAdmin = ({ currentUser }) => {
           showCloseButton: true
         }
       );
-      
+
       fetchCourseAssignments();
       fetchInitialData(); // Refresh overview data
-      
+
     } catch (err) {
       console.error("Error removing material assignment:", err);
-      
+
       // Hide loading notification
       if (loadingToast && typeof loadingToast.dismiss === 'function') {
         loadingToast.dismiss();
       }
-      
+
       // Enhanced error notification with more context
-      const errorMessage = err.response?.data?.message || 
-                          err.message || 
-                          'Terjadi kesalahan saat menghapus assignment materi';
-      
+      const errorMessage = err.response?.data?.message ||
+        err.message ||
+        'Terjadi kesalahan saat menghapus assignment materi';
+
       showNotification(
         `❌ Gagal Menghapus: ${errorMessage}`,
         'error',
@@ -361,12 +362,13 @@ const CourseTaggingAdmin = ({ currentUser }) => {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="grid grid-cols-3 items-center">
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-            <span className="font-bold text-gray-900">Course Assignment Manager</span>
+            <img
+              src={LogoIF}
+              alt="Logo Informatika UNPAR"
+              className="h-10 w-auto"
+            />
           </div>
-          
+
           <nav className="flex justify-center space-x-8">
             <Link to="/admin/dosen" className="text-gray-600 hover:text-gray-900 transition-colors font-medium px-2 py-1">
               Dosen
@@ -382,7 +384,7 @@ const CourseTaggingAdmin = ({ currentUser }) => {
               <div className="absolute -bottom-4 left-0 right-0 h-0.5 bg-blue-600 rounded-full"></div>
             </Link>
           </nav>
-            
+
           <div className="flex items-center justify-end space-x-4">
             <span className="text-gray-700 font-medium">{currentUser?.username || 'Admin'}</span>
             <div className="flex items-center space-x-2">
@@ -408,11 +410,10 @@ const CourseTaggingAdmin = ({ currentUser }) => {
     if (!notification) return null;
     return (
       <div className="fixed top-4 right-4 z-50">
-        <div className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border ${
-          notification.type === 'success'
+        <div className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border ${notification.type === 'success'
             ? 'bg-green-50 text-green-800 border-green-200'
             : 'bg-red-50 text-red-800 border-red-200'
-        }`}>
+          }`}>
           {notification.type === 'success' ? (
             <CheckCircle className="w-5 h-5" />
           ) : (
@@ -444,13 +445,13 @@ const CourseTaggingAdmin = ({ currentUser }) => {
               <X className="w-5 h-5" />
             </button>
           </div>
-          
+
           <div className="mb-4">
             <p className="text-sm text-gray-600">
               Pilih materi yang ingin ditugaskan ke mata kuliah ini:
             </p>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto mb-4">
             {unassignedMaterials.length === 0 ? (
               <p className="text-gray-500 text-center py-8">
@@ -480,7 +481,7 @@ const CourseTaggingAdmin = ({ currentUser }) => {
               </div>
             )}
           </div>
-          
+
           {selectedMaterialsForAssign.length > 0 && (
             <div className="mb-4 p-3 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-800">
@@ -488,7 +489,7 @@ const CourseTaggingAdmin = ({ currentUser }) => {
               </p>
             </div>
           )}
-          
+
           <div className="flex gap-3">
             <button
               onClick={handleAssignMaterials}
@@ -538,7 +539,7 @@ const CourseTaggingAdmin = ({ currentUser }) => {
       <Header />
       <Notification />
       <AssignMaterialsModal />
-      
+
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 mb-6">
@@ -562,8 +563,8 @@ const CourseTaggingAdmin = ({ currentUser }) => {
             {currentView === 'courses' ? 'Manajemen Assignment Materi' : `Assignment Materi - ${selectedCourse?.name}`}
           </h2>
           <p className="text-gray-600">
-            {currentView === 'courses' 
-              ? 'Kelola assignment materi untuk setiap mata kuliah' 
+            {currentView === 'courses'
+              ? 'Kelola assignment materi untuk setiap mata kuliah'
               : 'Kelola materi yang ditugaskan untuk mata kuliah ini'
             }
           </p>
@@ -647,7 +648,7 @@ const CourseTaggingAdmin = ({ currentUser }) => {
                 filteredCourses.map((course) => {
                   const courseAssignment = assignmentsOverview.find(assignment => assignment.course_id === course.id);
                   const materialCount = courseAssignment ? parseInt(courseAssignment.material_count || 0) : 0;
-                  
+
                   return (
                     <div
                       key={course.id}
@@ -664,11 +665,10 @@ const CourseTaggingAdmin = ({ currentUser }) => {
                       <p className="text-sm text-gray-600 mb-3">{course.code}</p>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500">{materialCount} materi assigned</span>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          materialCount > 0 
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${materialCount > 0
                             ? 'bg-green-100 text-green-800'
                             : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                          }`}>
                           {materialCount > 0 ? 'Configured' : 'Needs Setup'}
                         </span>
                       </div>
@@ -744,8 +744,8 @@ const CourseTaggingAdmin = ({ currentUser }) => {
                 <div className="p-6 text-center text-gray-500">
                   <Tag className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <p>
-                    {searchTerm 
-                      ? 'Tidak ada materi assigned yang ditemukan' 
+                    {searchTerm
+                      ? 'Tidak ada materi assigned yang ditemukan'
                       : 'Belum ada materi yang ditugaskan untuk mata kuliah ini'
                     }
                   </p>
@@ -761,8 +761,8 @@ const CourseTaggingAdmin = ({ currentUser }) => {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
                   {filteredAssignedMaterials.map((material) => (
-                    <div 
-                      key={material.id} 
+                    <div
+                      key={material.id}
                       className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 group hover:shadow-md transition-all"
                     >
                       <div className="flex items-center justify-between">
