@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://sibakso-backend-production.up.railway.app/api";
 
 const SearchPage = ({ currentUser }) => {
   const navigate = useNavigate();

@@ -8,7 +8,7 @@ import EditModal from '../components/EditModal';
 import axios from 'axios';
 import AuthService from '../services/auth.service';
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://sibakso-backend-production.up.railway.app/api";
 
 // Setup axios interceptor for authentication
 axios.interceptors.request.use(
