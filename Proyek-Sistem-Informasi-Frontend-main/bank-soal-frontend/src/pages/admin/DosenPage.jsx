@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Plus, Edit, Trash2, User, Mail, Eye, EyeOff, X, LogOut, Save, AlertCircle, CheckCircle, Users, UserCheck, Filter } from 'lucide-react';
+import LogoIF from "../../assets/LogoIF.jpg";
 
 const DosenPage = () => {
   const [currentView, setCurrentView] = useState('daftar');

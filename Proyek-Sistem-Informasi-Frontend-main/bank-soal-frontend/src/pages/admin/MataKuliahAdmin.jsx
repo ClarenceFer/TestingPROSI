@@ -3,6 +3,7 @@ import { Search, Plus, User, LogOut, Edit, Trash2, Save, X, Tag, Filter, AlertCi
 import { BrowserRouter as Router, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Menggunakan Axios untuk permintaan HTTP
 import AuthService from '../../services/auth.service'; // Assuming this path is correct
+import LogoIF from "../../assets/LogoIF.jpg";
 
 // Base URL untuk API Anda, sekarang menunjuk ke endpoint tags
 const API_URL = "https://sibakso-backend-production.up.railway.app/api/course-tags/"; // Sesuai dengan route backend Anda
