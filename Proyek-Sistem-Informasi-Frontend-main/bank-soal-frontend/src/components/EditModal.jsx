@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { User, FileText, ChevronDown, X, AlertCircle, CheckCircle, AlertTriangle } from "lucide-react";  
 
-const API_URL = "https://sibakso-backend-production.up.railway.app/api/";
+const API_URL = "https://sibakso-backend-production.up.railway.app/api";
 
 
 export default function EditModal({ isOpen, onClose, questionSet = {}, currentUser = {} }) {
