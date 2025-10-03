@@ -92,10 +92,7 @@ export default function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Home currentUser={currentUser} />
-          </ProtectedRoute>} />
+        <Route path="/" element={<Home currentUser={currentUser} />} />
         <Route path="/login" element={<Login setCurrentUser={setCurrentUser} />} />
         
         {/* User Protected Routes */}

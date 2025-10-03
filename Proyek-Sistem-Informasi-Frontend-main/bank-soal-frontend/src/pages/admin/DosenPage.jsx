@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Search, Plus, Edit, Trash2, User, Mail, Eye, EyeOff, X, LogOut, Save, AlertCircle, CheckCircle, Users, UserCheck, Filter } from 'lucide-react';
-import LogoIF from "../../assets/LogoIF.jpg";
 
 const DosenPage = () => {
   const [currentView, setCurrentView] = useState('daftar');
@@ -166,7 +165,7 @@ const Header = () => (
       <div className="grid grid-cols-3 items-center">
         <div className="flex items-center space-x-3">
           <img
-            src={LogoIF}
+            src="/src/assets/LogoIF.jpg"
             alt="Logo Informatika UNPAR"
             className="h-10 w-auto"
           />
