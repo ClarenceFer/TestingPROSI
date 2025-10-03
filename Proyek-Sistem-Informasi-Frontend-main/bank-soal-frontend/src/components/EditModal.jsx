@@ -4,7 +4,6 @@ import { User, FileText, ChevronDown, X, AlertCircle, CheckCircle, AlertTriangle
 
 const API_URL = "https://sibakso-backend-production.up.railway.app/api";
 
-
 export default function EditModal({ isOpen, onClose, questionSet = {}, currentUser = {} }) {
     // Main state for form data
     const [metadata, setMetadata] = useState({

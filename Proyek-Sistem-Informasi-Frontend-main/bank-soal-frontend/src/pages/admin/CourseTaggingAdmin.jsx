@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import AuthService from '../../services/auth.service';
 
-const API_URL = "https://sibakso-backend-production.up.railway.app/api/";
+const API_URL = "https://sibakso-backend-production.up.railway.app/api";
 
 // Service untuk mengambil course data
 const CourseService = {
