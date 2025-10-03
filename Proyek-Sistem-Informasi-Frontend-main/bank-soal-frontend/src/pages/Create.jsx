@@ -147,7 +147,7 @@ const FormCreatorPage = ({ currentUser }) => {
             try {
                 setIsLoadingDropdowns(true);
                 
-                const response = await fetch("http://localhost:8080/api/dropdown/all-dropdown-data");
+                const response = await fetch("https://sibakso-backend-production.up.railway.app/api/dropdown/all-dropdown-data");
                 const data = await response.json();
                 
                 if (data.success) {
